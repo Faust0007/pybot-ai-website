@@ -42,12 +42,30 @@ TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessag
 def submit_form():
     """Обработка заявки с сайта"""
     try:
+        # Логируем входящий запрос
+        print(f"\n{'='*60}")
+        print(f"📥 Получена заявка с сайта")
+        print(f"   Origin: {request.headers.get('Origin', 'Unknown')}")
+        print(f"   Time: {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
+        print(f"{'='*60}")
+        
         data = request.get_json()
+        if not data:
+            print("❌ Ошибка: данные не получены")
+            return jsonify({
+                'success': False,
+                'error': 'Данные не получены'
+            }), 400
+        
         name = data.get('name', '').strip()
         phone = data.get('phone', '').strip()
         
+        print(f"   Имя: {name}")
+        print(f"   Телефон: {phone}")
+        
         # Валидация
         if not name or not phone:
+            print("❌ Ошибка валидации: имя или телефон пустые")
             return jsonify({
                 'success': False,
                 'error': 'Имя и телефон обязательны для заполнения'
@@ -61,26 +79,30 @@ def submit_form():
 🕐 <b>Время:</b> {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}
 
 ---
-Сайт: PyBot AI"""
+Сайт: https://faust0007.github.io/pybot-ai-website/"""
 
         # Отправляем в Telegram
+        print(f"📤 Отправка в Telegram...")
         telegram_response = send_to_telegram(message)
         
         if telegram_response.get('ok'):
+            print(f"✅ Заявка успешно обработана и отправлена в Telegram")
             return jsonify({
                 'success': True,
                 'message': 'Заявка успешно отправлена!'
             }), 200
         else:
             # Логируем ошибку, но все равно возвращаем успех пользователю
-            print(f"Ошибка отправки в Telegram: {telegram_response}")
+            print(f"⚠️  Ошибка отправки в Telegram, но заявка сохранена")
             return jsonify({
                 'success': True,
                 'message': 'Заявка получена!'
             }), 200
             
     except Exception as e:
-        print(f"Ошибка обработки заявки: {e}")
+        print(f"❌ Критическая ошибка обработки заявки: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': 'Произошла ошибка при обработке заявки'
@@ -96,9 +118,17 @@ def send_to_telegram(message):
         }
         
         response = requests.post(TELEGRAM_API_URL, json=payload, timeout=10)
-        return response.json()
+        result = response.json()
+        
+        # Логируем результат для отладки
+        if result.get('ok'):
+            print(f"✅ Сообщение успешно отправлено в Telegram (Message ID: {result.get('result', {}).get('message_id')})")
+        else:
+            print(f"❌ Ошибка отправки в Telegram: {result}")
+        
+        return result
     except Exception as e:
-        print(f"Ошибка отправки в Telegram: {e}")
+        print(f"❌ Ошибка отправки в Telegram: {e}")
         return {'ok': False, 'error': str(e)}
 
 @app.route('/health', methods=['GET'])
