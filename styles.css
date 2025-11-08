@@ -74,15 +74,35 @@ body {
 }
 
 .hero-content {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+.hero-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
-    margin-bottom: 24px;
     line-height: 1.2;
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-phone {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .highlight {
@@ -401,33 +421,11 @@ body {
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    text-align: center;
 }
 
-.footer-info p {
+.footer-content p {
     margin: 0;
-}
-
-.footer-contact {
-    display: flex;
-    align-items: center;
-}
-
-.footer-phone {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.phone-icon {
-    font-size: 1.2rem;
 }
 
 /* Modal */
@@ -570,9 +568,14 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .footer-content {
+    .hero-title-wrapper {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hero-phone {
+        font-size: 1.1rem;
     }
 
     .cta-title {
