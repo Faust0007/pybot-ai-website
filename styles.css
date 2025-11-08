@@ -33,6 +33,38 @@ body {
     padding: 0 20px;
 }
 
+/* Header */
+.site-header {
+    background: var(--text-dark);
+    color: white;
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-md);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.header-phone {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -390,18 +422,8 @@ body {
     align-items: center;
     gap: 8px;
     color: white;
-    text-decoration: none;
     font-size: 1.1rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-    padding: 8px 16px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.footer-phone:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
 }
 
 .phone-icon {
@@ -513,6 +535,16 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .header-phone {
+        font-size: 1rem;
+    }
+
     .hero-title {
         font-size: 2.5rem;
     }
