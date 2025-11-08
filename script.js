@@ -58,6 +58,9 @@ async function handleSubmit(event) {
     submitButton.textContent = 'Отправка...';
     
     try {
+        console.log('📤 Отправка заявки на сервер:', API_URL);
+        console.log('📋 Данные:', { name, phone });
+        
         // Отправляем данные на сервер
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -67,7 +70,16 @@ async function handleSubmit(event) {
             body: JSON.stringify({ name, phone })
         });
         
+        console.log('📥 Ответ сервера:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Ошибка сервера:', errorText);
+            throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('✅ Данные от сервера:', data);
         
         if (data.success) {
             // Показываем сообщение об успехе
@@ -92,18 +104,26 @@ async function handleSubmit(event) {
             throw new Error(data.error || 'Ошибка при отправке заявки');
         }
     } catch (error) {
-        console.error('Ошибка отправки заявки:', error);
+        console.error('❌ Ошибка отправки заявки:', error);
+        console.error('   Детали:', error.message);
+        console.error('   URL:', API_URL);
         
-        // Показываем сообщение об ошибке, но все равно благодарим пользователя
+        // Показываем сообщение об ошибке с деталями
         const modalContent = document.querySelector('.modal-content');
+        const errorMessage = error.message.includes('CORS') || error.message.includes('Failed to fetch')
+            ? 'Проблема с подключением к серверу. Проверьте консоль браузера (F12) для деталей.'
+            : error.message;
+        
         modalContent.innerHTML = `
             <span class="close" onclick="closeModal()">&times;</span>
             <div style="text-align: center; padding: 20px 0;">
                 <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
-                <h2 style="color: #f59e0b; margin-bottom: 16px;">Заявка получена!</h2>
-                <p style="color: #64748b; margin-bottom: 24px;">
-                    Мы получили вашу заявку. Если возникли проблемы с отправкой, 
-                    пожалуйста, свяжитесь с нами напрямую.
+                <h2 style="color: #f59e0b; margin-bottom: 16px;">Ошибка отправки</h2>
+                <p style="color: #64748b; margin-bottom: 16px;">
+                    ${errorMessage}
+                </p>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 24px;">
+                    Откройте консоль браузера (F12) для подробностей
                 </p>
                 <button class="cta-button" onclick="closeModal()">Закрыть</button>
             </div>

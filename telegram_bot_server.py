@@ -20,23 +20,46 @@ app = Flask(__name__)
 # Настройка CORS для вашего сайта
 ALLOWED_ORIGINS = [
     'https://faust0007.github.io',
+    'https://faust0007.github.io/pybot-ai-website',
     'http://localhost:8000',  # Для локального тестирования
-    'http://127.0.0.1:8000'   # Для локального тестирования
+    'http://127.0.0.1:8000',   # Для локального тестирования
+    'http://localhost:5000',  # Для локального тестирования сервера
 ]
 
-CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=True)
+CORS(app, 
+     origins=ALLOWED_ORIGINS, 
+     supports_credentials=True,
+     allow_headers=['Content-Type', 'Authorization'],
+     methods=['GET', 'POST', 'OPTIONS'])
 
-# Конфигурация Telegram бота из .env файла
+# Конфигурация Telegram бота из переменных окружения
+# На Render используйте Environment Variables, локально - .env файл
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-# Проверка наличия обязательных переменных
+# Проверка наличия обязательных переменных (только предупреждение, не ошибка)
 if not TELEGRAM_BOT_TOKEN:
-    raise ValueError("TELEGRAM_BOT_TOKEN не установлен! Проверьте .env файл")
+    print("⚠️  WARNING: TELEGRAM_BOT_TOKEN не установлен! Проверьте переменные окружения на Render")
 if not TELEGRAM_CHAT_ID:
-    raise ValueError("TELEGRAM_CHAT_ID не установлен! Проверьте .env файл")
+    print("⚠️  WARNING: TELEGRAM_CHAT_ID не установлен! Проверьте переменные окружения на Render")
+
+# Логируем конфигурацию (безопасно, без полного токена)
+if TELEGRAM_BOT_TOKEN:
+    print(f"✅ TELEGRAM_BOT_TOKEN установлен: {TELEGRAM_BOT_TOKEN[:20]}...")
+else:
+    print("❌ TELEGRAM_BOT_TOKEN не установлен")
+    
+if TELEGRAM_CHAT_ID:
+    print(f"✅ TELEGRAM_CHAT_ID установлен: {TELEGRAM_CHAT_ID}")
+else:
+    print("❌ TELEGRAM_CHAT_ID не установлен")
 
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
+
+@app.route('/api/submit', methods=['OPTIONS'])
+def handle_options():
+    """Обработка preflight запросов CORS"""
+    return '', 200
 
 @app.route('/api/submit', methods=['POST'])
 def submit_form():
@@ -154,6 +177,12 @@ def index():
 
 if __name__ == '__main__':
     # Для локального тестирования
+    print("\n" + "="*60)
+    print("🚀 PyBot AI Telegram Server")
+    print("="*60)
+    print(f"✅ CORS настроен для доменов: {', '.join(ALLOWED_ORIGINS)}")
+    print("="*60 + "\n")
+    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
 
