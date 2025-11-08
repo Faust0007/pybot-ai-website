@@ -29,7 +29,7 @@ document.addEventListener('keydown', function(event) {
 // API URL для отправки заявок
 // ЗАМЕНИТЕ на URL вашего сервера после деплоя на Render/Railway
 // Пример: 'https://pybot-ai-telegram-server.onrender.com/api/submit'
-const API_URL = 'https://your-server-url.onrender.com/api/submit';
+const API_URL = 'https://pybot-ai-server.onrender.com/api/submit';
 
 // Form submission handler
 async function handleSubmit(event) {

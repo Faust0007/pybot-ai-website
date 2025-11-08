@@ -10,13 +10,31 @@ from flask_cors import CORS
 import requests
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Загружаем переменные из .env файла
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Разрешаем запросы с любого домена
 
-# Конфигурация Telegram бота
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '5622065192:AAH4ofn0NlCNRuUM7l7LsNWSB60N_a-QXqg')
-TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')  # Ваш Chat ID (см. инструкцию)
+# Настройка CORS для вашего сайта
+ALLOWED_ORIGINS = [
+    'https://faust0007.github.io',
+    'http://localhost:8000',  # Для локального тестирования
+    'http://127.0.0.1:8000'   # Для локального тестирования
+]
+
+CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=True)
+
+# Конфигурация Telegram бота из .env файла
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
+# Проверка наличия обязательных переменных
+if not TELEGRAM_BOT_TOKEN:
+    raise ValueError("TELEGRAM_BOT_TOKEN не установлен! Проверьте .env файл")
+if not TELEGRAM_CHAT_ID:
+    raise ValueError("TELEGRAM_CHAT_ID не установлен! Проверьте .env файл")
 
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage'
 
@@ -88,7 +106,20 @@ def health_check():
     """Проверка работоспособности сервера"""
     return jsonify({
         'status': 'ok',
-        'bot_configured': bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
+        'bot_configured': bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID),
+        'site_url': 'https://faust0007.github.io/pybot-ai-website/'
+    }), 200
+
+@app.route('/', methods=['GET'])
+def index():
+    """Главная страница API"""
+    return jsonify({
+        'service': 'PyBot AI Telegram Notification Server',
+        'status': 'running',
+        'endpoints': {
+            '/api/submit': 'POST - Отправка заявки с сайта',
+            '/health': 'GET - Проверка работоспособности'
+        }
     }), 200
 
 if __name__ == '__main__':
