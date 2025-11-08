@@ -309,12 +309,103 @@ body {
     opacity: 0.95;
 }
 
+/* Reviews Section */
+.reviews {
+    padding: 80px 0;
+    background: var(--bg-light);
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+}
+
+.review-card {
+    background: var(--bg-white);
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 2px solid var(--border-color);
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.review-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.review-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.review-position {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.review-text {
+    color: var(--text-dark);
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
 /* Footer */
 .footer {
     background: var(--text-dark);
     color: white;
     padding: 32px 0;
-    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-info p {
+    margin: 0;
+}
+
+.footer-contact {
+    display: flex;
+    align-items: center;
+}
+
+.footer-phone {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-phone:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.phone-icon {
+    font-size: 1.2rem;
 }
 
 /* Modal */
@@ -443,6 +534,15 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
     .cta-title {
         font-size: 2rem;
     }
@@ -468,7 +568,8 @@ body {
 
     .problem,
     .solution,
-    .benefits {
+    .benefits,
+    .reviews {
         padding: 60px 0;
     }
 }
