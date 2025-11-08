@@ -27,3 +27,12 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Telegram bot token (если будет в файле)
+config.py
+secrets.py
+

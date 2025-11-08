@@ -1,0 +1,15 @@
+# Конфигурация для автоматического деплоя на Render
+# Этот файл позволяет автоматически создать сервис при подключении репозитория
+
+services:
+  - type: web
+    name: pybot-ai-telegram-server
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn telegram_bot_server:app
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false  # Нужно будет ввести вручную в настройках
+      - key: TELEGRAM_CHAT_ID
+        sync: false  # Нужно будет ввести вручную в настройках
+

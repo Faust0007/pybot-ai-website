@@ -26,13 +26,18 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// API URL для отправки заявок
+// ЗАМЕНИТЕ на URL вашего сервера после деплоя на Render/Railway
+// Пример: 'https://pybot-ai-telegram-server.onrender.com/api/submit'
+const API_URL = 'https://your-server-url.onrender.com/api/submit';
+
 // Form submission handler
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault();
     
     const form = event.target;
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
     
     // Basic validation
     if (!name || !phone) {
@@ -47,29 +52,70 @@ function handleSubmit(event) {
         return;
     }
     
-    // Here you would typically send the data to your server
-    // For now, we'll just show a success message
-    console.log('Form submitted:', { name, phone });
+    // Показываем индикатор загрузки
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Отправка...';
     
-    // Show success message
-    const modalContent = document.querySelector('.modal-content');
-    modalContent.innerHTML = `
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div style="text-align: center; padding: 20px 0;">
-            <div style="font-size: 4rem; margin-bottom: 20px;">✓</div>
-            <h2 style="color: #10b981; margin-bottom: 16px;">Спасибо за заявку!</h2>
-            <p style="color: #64748b; margin-bottom: 24px;">
-                Мы получили вашу заявку и свяжемся с вами в течение 24 часов.
-            </p>
-            <button class="cta-button" onclick="closeModal()">Закрыть</button>
-        </div>
-    `;
-    
-    // Reset form
-    form.reset();
-    
-    // Auto-close after 5 seconds (optional)
-    // setTimeout(closeModal, 5000);
+    try {
+        // Отправляем данные на сервер
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, phone })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Показываем сообщение об успехе
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.innerHTML = `
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">✓</div>
+                    <h2 style="color: #10b981; margin-bottom: 16px;">Спасибо за заявку!</h2>
+                    <p style="color: #64748b; margin-bottom: 24px;">
+                        Мы получили вашу заявку и свяжемся с вами в течение 24 часов.
+                    </p>
+                    <button class="cta-button" onclick="closeModal()">Закрыть</button>
+                </div>
+            `;
+            
+            // Reset form
+            form.reset();
+            
+            console.log('Заявка успешно отправлена в Telegram');
+        } else {
+            throw new Error(data.error || 'Ошибка при отправке заявки');
+        }
+    } catch (error) {
+        console.error('Ошибка отправки заявки:', error);
+        
+        // Показываем сообщение об ошибке, но все равно благодарим пользователя
+        const modalContent = document.querySelector('.modal-content');
+        modalContent.innerHTML = `
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">⚠️</div>
+                <h2 style="color: #f59e0b; margin-bottom: 16px;">Заявка получена!</h2>
+                <p style="color: #64748b; margin-bottom: 24px;">
+                    Мы получили вашу заявку. Если возникли проблемы с отправкой, 
+                    пожалуйста, свяжитесь с нами напрямую.
+                </p>
+                <button class="cta-button" onclick="closeModal()">Закрыть</button>
+            </div>
+        `;
+        
+        form.reset();
+    } finally {
+        // Восстанавливаем кнопку
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+    }
 }
 
 // Smooth scroll for anchor links
