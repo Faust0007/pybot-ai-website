@@ -78,11 +78,26 @@ body {
     margin: 0 auto;
 }
 
+.hero-title-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
 .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
-    margin-bottom: 24px;
     line-height: 1.2;
+    margin: 0;
 }
 
 .highlight {
@@ -536,8 +551,18 @@ body {
         font-size: 1rem;
     }
 
+    .hero-title-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .hero-logo {
+        height: 60px;
+    }
+
     .hero-title {
         font-size: 2.5rem;
+        text-align: center;
     }
 
     .hero-stats {
