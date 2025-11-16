@@ -38,10 +38,10 @@ try:
         'text': message,
         'parse_mode': 'HTML'
     }
-    
-    response = requests.post(TELEGRAM_API_URL, json=payload, timeout=10)
+
+    response = requests.post(TELEGRAM_API_URL, json=payload, timeout=5)
     result = response.json()
-    
+
     if result.get('ok'):
         print("✅ Сообщение успешно отправлено в Telegram!")
         print(f"   Message ID: {result.get('result', {}).get('message_id')}")
@@ -58,4 +58,3 @@ try:
             
 except Exception as e:
     print(f"❌ Ошибка: {e}")
-
